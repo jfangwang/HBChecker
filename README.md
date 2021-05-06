@@ -41,8 +41,10 @@ Feel free to make a pull request, raise any git issues and will be updated accor
 | checker.py    | Checks the checker with selenium     |
 | chromedriver.exe      | chromedriver for windows     |
 | hbchecker.py     | Main entry point for running script    |
+| helper_functions.py     | Helper functions for getting information    |
 | install_me.sh      | Installs all required packages for this project   |
 | /etc/hbchecker.txt      | File containing credentials to your login |
+| setup.py    | Necessary to install all files as a module with pip locally |
 
 ## Pending List of Features Coming
 * Add a flag to change login credentials
