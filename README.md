@@ -1,4 +1,4 @@
-[Image of auto proj](https://i.imgur.com/WZNODKC.png)
+![Image of auto proj](https://i.imgur.com/WZNODKC.png)
 # Welcome to HBChecker
 ## What is this?
 This is a python selenium script to check the results of the checker. Instead of hitting the 'check code' button for every task, you just run this script once and that's it. This project is primarily built for vagrant running on ```ubuntu 16.04 LTS distro``` but could also run on PC with VSCode with a little tinkering.
