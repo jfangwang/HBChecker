@@ -1,0 +1,19 @@
+.TH PUSH 1 "MAY 06" Linux "PUSH"
+.SH NAME
+push \- Part of a Holberton School checker tool that checks your progress on any given project. Contains two commands: 
+.B git push
+and
+.B hbchecker -f
+.SH SYNOPSIS
+.B push
+.SH DESCRIPTION
+The idea was to create an alternative command to show only checker results that only contained files the user pushed. They would know if their pushed changes changed the results of the checker or not
+.SH FILES
+.I /etc/hbchecker.txt
+.RS
+File containing credentials to your login
+.SH AUTHOR
+Jonny Wang from NHV Cohort #13
+.SH "SEE ALSO"
+.BR hbchecker (1),
+.BR https://www.youtube.com/watch?v=5qjnDd1rsII

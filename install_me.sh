@@ -36,10 +36,16 @@ hbchecker=hbchecker.py:run
 sudo pip3 install -e $(pwd)
 echo "alias hbchecker='sudo hbchecker'" >> ~/.bashrc
 echo "alias push='git push && sudo hbchecker'" >> ~/.bashrc
+echo "----------------"
+echo "Adding Man Pages"
+echo "----------------"
 sudo mkdir -p /usr/local/man/man1/
 sudo cp hbchecker /usr/local/man/man1/hbchecker.1
 sudo gzip /usr/local/man/man1/hbchecker.1
 sudo rm hbchecker
+sudo cp push /usr/local/man/man1/push.1
+sudo gzip /usr/local/man/man1/push.1
+sudo rm push
 echo "-----------------------"
 echo "INSTALLATION COMPLETE!!"
 echo "-----------------------"
