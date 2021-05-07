@@ -35,7 +35,7 @@ echo "-----------------------"
 hbchecker=hbchecker.py:run
 sudo pip3 install -e $(pwd)
 echo "alias hbchecker='sudo hbchecker'" >> ~/.bashrc
-echo "alias push='git push && sudo hbchecker'" >> ~/.bashrc
+echo "alias push='git push && sudo hbchecker -f'" >> ~/.bashrc
 echo "----------------"
 echo "Adding Man Pages"
 echo "----------------"
