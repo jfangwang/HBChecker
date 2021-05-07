@@ -25,7 +25,7 @@ def get_credentials():
                 " everytime. You have the option to enter your holberton crede"
                 "ntials which will be saved in '/etc/hbchecker.txt'. As long as "
                 "this file exists, you should be good to go running this script."
-                " prompted.\n\nType 'man hbchecker' for more information.")
+                " prompted.\n\nType 'man hbchecker' or 'man push' for more information.")
         print(welcome)
 
         username = input("Holberton email: ")
