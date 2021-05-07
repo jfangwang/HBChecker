@@ -12,8 +12,8 @@ This is a python selenium script to check the results of the checker. Instead of
 
 ## Things you should know after installation
 Near the end of the install file, the script creates two seperate aliases:
-1. hbchecker: This is the main command that should be used when checking over projects.
-2. push: This alias is really two commands shoved together. It runs 'git push' and then 'hbchecker -f' after the git push. The idea was to create an alternative command to show only checker results that only contained files the user pushed. They would know if their pushed changes changed the results of the checker or not
+1. <b>hbchecker</b>: This is the main command that should be used when checking over projects.
+2. <b>push</b>: This alias is really two commands shoved together. It runs 'git push' and then 'hbchecker -f' after the git push. The idea was to create an alternative command to show only checker results that only contained files the user pushed. They would know if their pushed changes changed the results of the checker or not
 
 ## Usage
 ### First run
