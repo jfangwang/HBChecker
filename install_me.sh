@@ -40,6 +40,6 @@ sudo mkdir -p /usr/local/man/man1/
 sudo cp hbchecker /usr/local/man/man1/hbchecker.1
 sudo gzip /usr/local/man/man1/hbchecker.1
 sudo rm hbchecker
-echo "-----------------------"
-echo "INSTALLATION COMPLETE!!"
-echo "-----------------------"
+echo "------------------------------------------------------------------------------"
+echo "INSTALLATION COMPLETE, RESTART TERMINAL OR RUN 'source ~/.bashrc' FOR COMMANDS"
+echo "------------------------------------------------------------------------------"
