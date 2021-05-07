@@ -208,6 +208,7 @@ def run_checker():
         count = 0
         show_score = True
         avg_task_time = []
+        button_count = -1
         print()
         
         for task_count in range(0, len(task_box)):
@@ -243,6 +244,7 @@ def run_checker():
             for item in button_list:
                 if "Check your code" in item.text:
                     has_check_code_button = True
+                    button_count += 1
                 if "Done" in button_list[0].text and "yes" in button_list[0].get_attribute("class") and check_every_task == False:
                     task_completed = True
 
@@ -297,7 +299,7 @@ def run_checker():
 
 
 
-            check_code_button[task_count].click()
+            check_code_button[button_count].click()
 
             # wait for the results to load
             try:
@@ -316,7 +318,7 @@ def run_checker():
                 wait = WebDriverWait(driver, 0.7)
                 while counter < timeout and results_loaded == False:
                     try:
-                        wait.until(EC.visibility_of(start_test_button[task_count]))
+                        wait.until(EC.visibility_of(start_test_button[button_count]))
                         results_loaded = True
                     except KeyboardInterrupt:
                         sys.exit(1)
@@ -326,23 +328,22 @@ def run_checker():
                             time.sleep(0.3/len(ascii_animation))
                     counter += 1
                 if results_loaded == False:
-                    start_test_button[task_count].click()
+                    start_test_button[button_count].click()
             except:
                 results_loaded = False
 
             # Setting up for popup box
             wait = WebDriverWait(driver, timeout)
-            result_box = task_popup[task_count].find_element_by_class_name("result")
+            result_box = task_popup[button_count].find_element_by_class_name("result")
             req_box = result_box.find_elements_by_class_name("requirement")
             check_box = result_box.find_elements_by_class_name("code")
 
             # Get the first valid commit id
-            if task_count == commit_id:
+            if str(commit_id).isdigit():
                 try:
                     commit_id = result_box.find_elements_by_tag_name("code")[0].text
                 except:
                     commit_id += 1
-                    pass
             output_length = 0
             total_temp = 0
             earned_temp = 0
@@ -402,7 +403,7 @@ def run_checker():
                 new_line_count += 1
 
             # Close the task
-            close_button = task_popup[task_count].find_element_by_class_name('close')
+            close_button = task_popup[button_count].find_element_by_class_name('close')
             wait.until(EC.visibility_of(close_button))
             close_button.click()
             end_task_time = datetime.now()
