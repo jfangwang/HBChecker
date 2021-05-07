@@ -46,6 +46,6 @@ sudo rm hbchecker
 sudo cp push /usr/local/man/man1/push.1
 sudo gzip /usr/local/man/man1/push.1
 sudo rm push
-echo "-----------------------"
-echo "INSTALLATION COMPLETE!!"
-echo "-----------------------"
+echo "------------------------------------------------------------------------------"
+echo "INSTALLATION COMPLETE, RESTART TERMINAL OR RUN 'source ~/.bashrc' FOR COMMANDS"
+echo "------------------------------------------------------------------------------"

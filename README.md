@@ -1,13 +1,19 @@
 ![Image of auto proj](https://i.imgur.com/WZNODKC.png)
 # Welcome to HBChecker
 ## What is this?
-This is a python selenium script to check the results of the checker. Instead of hitting the 'check code' button for every task, you just run this script once and that's it. This project is primarily built for vagrant running on ```ubuntu 16.04 LTS distro``` but could also run on PC with VSCode with a little tinkering.
+This is a python selenium script to check the results of the checker. Instead of hitting the 'check code' button for every task, you just run this script once and that's it. This project is primarily built for vagrant running on ```ubuntu 16.04 LTS distro``` but could also run on PC with VSCode with a little tinkering. The installation script only works with Linux at the moment so be warned.
+
 ## Setup for Vagrant running Ubuntu
 1. Clone the repo: ```git clone https://github.com/jfangwang/HBChecker.git```
 2. cd into HBChecker repo: ```cd HBChecker```
-3. Everything is bundled in ```selenium_install.sh``` to keep things simple. For installation, run the file by entering in ```./install_me.sh``` into terminal. Enter 'y' when prompted and usually takes 3-4 minutes to install.
+3. Everything is bundled in ```./install_me.sh``` to keep things simple. For installation, run the file by entering in ```./install_me.sh``` into terminal. Enter 'y' when prompted and usually takes 3-4 minutes to install.
 4. The install file adds aliases to ~/.bashrc file so just restart the terminal or enter ```source ~/.bashrc```
 5. You are done and ready to go.
+
+## Things you should know after installation
+Near the end of the install file, the script creates two seperate aliases:
+1. <b>hbchecker</b>: This is the main command that should be used when checking over projects.
+2. <b>push</b>: This alias is really two commands shoved together. It runs 'git push' and then 'hbchecker -f' after the git push. The idea was to create an alternative command to show only checker results that only contained files the user pushed. They would know if their pushed changes changed the results of the checker or not
 
 ## Usage
 ### First run
@@ -27,6 +33,7 @@ Clicks 'Start Test' button and checks the results on every task verifying your g
 Any files that are pushed to the project repo will be checked against the checker.  hbchecker  will  only  print  out selected  results  based off the user's latest push and know which tasks to check for. If none of the files pushed tow git are required by no task, nothing will show up.
 
 ## Common Commands
+* ```push``` : Runs 'git push' and then 'hbchecker -f'.
 * ```hbchecker -e 212``` or ```hbchecker 212 -e``` : Check every task in the 0x00. C - Hello, World project.
 * ```hbchecker``` : Check the results of whatever project url is saved. If no project url exists, it will prompt you to enter one in.
 * ```hbchecker -f 212``` :  Any files that are pushed to the project repo will be checked against the checker.  hbchecker  will  only  print  out selected  results  based off the user's latest push and know which tasks to check for. If none of the files pushed to git are required by no task, nothing will show up.
