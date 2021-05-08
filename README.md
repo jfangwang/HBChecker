@@ -56,6 +56,8 @@ Feel free to make a pull request, raise any git issues and will be updated accor
 ## Pending List of Features Coming
 * Add a flag to change login credentials
 * Automatically know which project to check for without knowledge of the project number.
+* Auto update program to get the most recent changes of the repo.
+* Use cookies to speed up the login process
 
 ## Author
 Jonny Wang from NHV Cohort #13
