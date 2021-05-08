@@ -12,12 +12,25 @@ from datetime import date
 from datetime import datetime
 from helper_functions import *
 import time
+import platform
 from getpass import getpass
 
 
+
 def run_checker():
+    # Find what OS this script is running on
+    os_sys = platform.system()
+    if os_sys == 'Windows':
+        file_path = "hbchecker.txt"
+    elif os_sys == 'Linux':
+        file_path = "/etc/hbchecker.txt"
+    elif os_sys == 'Darwin':
+        file_path = "hbchecker.txt"
+    else:
+        print("HBChecker cannot run on " + os_sys + " just yet.")
+        exit(1)
+
     # Credentials
-    file_path = "/etc/hbchecker.txt"
     credentials = get_credentials()
     if credentials == 1:
         exit(1)
@@ -40,7 +53,7 @@ def run_checker():
     pre_url2 = "http://intranet.hbtn.io/projects/"
     check_every_task = False
     check_files_changed = False
-    os_sys = "idk"
+    os_sys = platform.system()
 
     # Flags to run
     flags_dict = get_flags()
@@ -56,24 +69,21 @@ def run_checker():
     URL = PROJ_NUM
     # create a new Chrome session
     # driver = webdriver.Chrome(executable_path=PATH_lin, chrome_options=options)
-    try:
+    if os_sys == 'Linux':
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--no-sandbox')
         driver = webdriver.Chrome(executable_path=PATH_lin, chrome_options=options)
         print("Chrome driver found on Linux machine.")
-        os_sys = 'lin'
-    except:
-        try:
-            options = Options()
-            options.add_argument('--no-sandbox')
-            driver = webdriver.Chrome(executable_path=PATH_win, chrome_options=options)
-            print("Chrome driver found on Windows machine")
-            os_sys = 'win'
-        except:
-            print("Check if chromedriver or chromedriver.exe is in this directory")
-            exit(1)
+    elif os_sys == 'Windows':
+        options = Options()
+        options.add_argument('--no-sandbox')
+        driver = webdriver.Chrome(executable_path=PATH_win, chrome_options=options)
+        print("Chrome driver found on Windows machine")
+    else:
+        print("Cannot find chromedriver. Please re-run the installation script again.")
+        exit(1)
 
     # Navigate to the application login page
     driver.get("https://intranet.hbtn.io/auth/sign_in")
@@ -86,7 +96,7 @@ def run_checker():
     start_time = datetime.now()
 
     # Enter Login
-    print("Attempting to login as " + username)
+    print("Logging in as " + username)
     username_text.clear()
     username_text.send_keys(username)
     password_text.clear()
@@ -98,7 +108,7 @@ def run_checker():
     # Invalid Credentials
     try:
         element_present = EC.presence_of_element_located((By.CLASS_NAME, 'student-home'))
-        WebDriverWait(driver, timeout).until(element_present)
+        WebDriverWait(driver, 10).until(element_present)
     except TimeoutException:
         print("Invalid Credentials")
         os.remove(file_path)
@@ -173,6 +183,9 @@ def run_checker():
                     for req_files in git_files:
                         if req_files in user_files:
                             check_task = True
+                            break
+                    if check_task == True:
+                        break
                 if check_task == False and check_every_task == False:
                     continue
             
@@ -211,6 +224,7 @@ def run_checker():
         button_count = -1
         print()
         
+        # Checking Task
         for task_count in range(0, len(task_box)):
             new_line_count = 0
             output_length = 0
@@ -283,10 +297,6 @@ def run_checker():
                 else:
                     print("| \033[5;30;42m" + task_name +"\033[0m"+ (" " * (max_width-len(task_name)-len(task_type)-4)) +task_type.upper()+" |")
                 print("-" * max_width)
-                try:
-                    commit_id += 1
-                except:
-                    pass
                 continue
  
             # Print the Task Name
@@ -343,7 +353,7 @@ def run_checker():
                 try:
                     commit_id = result_box.find_elements_by_tag_name("code")[0].text
                 except:
-                    commit_id += 1
+                    pass
             output_length = 0
             total_temp = 0
             earned_temp = 0
@@ -351,6 +361,7 @@ def run_checker():
             code_x_mark = "\033[5;30;41m"+"[-]"+"\033[0m"
             req_check_mark = "\033[5;32;40m"+"[+]"+"\033[0m"
             req_x_mark = "\033[5;31;40m"+"[-]"+"\033[0m"
+            q_mark = "[?]"
 
             # Going throught each check in the task
 
@@ -364,11 +375,10 @@ def run_checker():
                 elif "fail" in class_names:
                     output_text = "{}:{} ".format(req_box[num].text, req_x_mark)
                 else:
-                    print("unknown")
-                    pass
+                    output_text = "{}:{} ".format(req_box[num].text, q_mark)
                 output_length += len(output_text) - 14
                 if output_length > max_width:
-                    print("\n")
+                    print()
                     new_line_count += 1
                     output_length = len(output_text)
                 print(output_text, end='')
@@ -388,8 +398,7 @@ def run_checker():
                 elif "fail" in class_names:
                     output_text = "{}:{} ".format(check_box[num].text, code_x_mark)
                 else:
-                    print("unknown")
-                    pass
+                    output_text = "{}:{} ".format(check_box[num].text, q_mark)
                 output_length += len(output_text) - 14
                 if output_length > max_width:
                     print()
@@ -418,6 +427,8 @@ def run_checker():
             else:
                 adv_total += total_temp
                 adv_earned += earned_temp
+
+            # Got some tasks wrong
             if earned_temp != total_temp:
                 if "advanced" in task_type:
                     sys.stdout.write("\033[F" * (new_line_count + 2))
@@ -427,7 +438,6 @@ def run_checker():
                     print("| " + task_name + (" " * (max_width-len(task_name)-len(task_type)-len(task_timer)-6))+task_timer+"  "+task_type.upper()+" |")
                 sys.stdout.write("\033[E" * (new_line_count + 2))
                 print("**Missing {:d}**".format(total_temp - earned_temp))
-
 
             # If results did not load
             elif results_loaded == False:
@@ -440,8 +450,13 @@ def run_checker():
                     print("| " + task_name +notice+ (" " * (max_width-len(task_name)-len(task_type)-len(notice)+14-4)) + task_type.upper()+" |")
                 print("-" * max_width)
                 show_score = False
-            # Assume every check is correct
-            else:
+
+            # Every check is correct
+            elif earned_temp == total_temp:
+                sys.stdout.write("\033[F" * (new_line_count))
+                for a in range(0, new_line_count):
+                    print(' ' * max_width, end='\r')
+                    print()
                 sys.stdout.write("\033[F" * (new_line_count + 3))
                 print("-" * max_width)
                 if "advanced" in task_type:
@@ -449,6 +464,18 @@ def run_checker():
                 else:
                     print("| \033[5;30;42m" + task_name +"\033[0m"+ (" " * (max_width-len(task_name)-len(task_type)-4)) +task_type.upper()+" |")
                 print("-" * max_width)
+
+            # Unknown
+            else:
+                sys.stdout.write("\033[F" * (new_line_count + 3))
+                print("-" * max_width)
+                notice = "    \033[5;30;44mUKNOWN\033[0m"
+                if "advanced" in task_type:
+                    print("| " + task_name +notice+ (" " * (max_width-len(task_name)-len(task_type)-len(notice)+14-4)) +"\033[5;30;45m"+task_type.upper()+"\033[0m |")
+                else:
+                    print("| " + task_name +notice+ (" " * (max_width-len(task_name)-len(task_type)-len(notice)+14-4)) + task_type.upper()+" |")
+                print("-" * max_width)
+                show_score = False
 
             # Wait until task has closed
             wait.until(EC.invisibility_of_element(close_button))
@@ -462,10 +489,35 @@ def run_checker():
         print('\n\n')
         if show_score == False:
             print("\033[5;30;44mSCORES ARE NOT COMPLETE, CHECK ONLINE FOR COMPLETE SCORE\033[0m")
-        print("Mandatory: {}/{}".format(man_earned, man_total))
-        print("Advanced: {}/{}".format(adv_earned, adv_total))
-        print("Total: {:d}/{:d}".format(man_earned + adv_earned, man_total + adv_total))
-        print("Used commit id: " + commit_id)
+        if man_total == 0:
+            man_score = '100.0'
+        else:
+            man_score = str(man_earned/man_total*100)
+        if adv_total == 0:
+            adv_score = '100.0'
+        else:
+            adv_score = str(adv_earned/adv_total*100)
+        if man_total == 0 and adv_total == 0:
+            total_score = '100.0'
+        else:
+            total_score = str((man_earned + adv_earned)/(man_total + adv_total)*100)
+        if man_score == '100.0':
+            man_score = '100'
+        else:
+            man_score = str(man_score)[:2]
+        if adv_score == '100.0':
+            adv_score = '100'
+        else:
+            adv_score = str(adv_score)[:2]
+        if total_score == '100.0':
+            total_score = '100'
+        else:
+            total_score = str(total_score)[:2]
+        print("Mandatory: {}/{} => {}{}".format(man_earned, man_total, man_score,'%'))
+        print("Advanced:  {}/{} => {}{}".format(adv_earned, adv_total, adv_score, '%'))
+        print("Total:     {}/{} => {}{}".format(man_earned + adv_earned, man_total + adv_total, total_score, '%'))
+        if commit_id != 'Not Found':
+            print("Used commit id: " + commit_id)
     # There are no check_code_buttons
     elif len(check_code_button) == 0:
         print("=============================")

@@ -2,9 +2,22 @@
 import os
 from sys import argv
 from getpass import getpass
+import platform
 
-file_path = "/etc/hbchecker.txt"
-# file_path = "hbchecker.txt"
+
+os_sys = platform.system()
+if os_sys == 'Windows':
+    file_path = "hbchecker.txt"
+elif os_sys == 'Linux':
+    file_path = "/etc/hbchecker.txt"
+elif os_sys == 'Darwin':
+    file_path = "hbchecker.txt"
+else:
+    print("HBChecker cannot run on " + os_sys + " just yet.")
+    exit(1)
+
+    print()
+
 email = "@holbertonschool.com"
 credentials = []
 
