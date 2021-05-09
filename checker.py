@@ -14,7 +14,7 @@ from helper_functions import *
 import time
 import platform
 from getpass import getpass
-
+import pickle
 
 
 def run_checker():
@@ -87,51 +87,59 @@ def run_checker():
 
     # Navigate to the application login page
     driver.get("https://intranet.hbtn.io/auth/sign_in")
-
-    # Sign In
-    username_text = driver.find_element_by_id("user_login")
-    password_text = driver.find_element_by_id("user_password")
-
-    # Tracking runtime
-    start_time = datetime.now()
-
-    # Enter Login
-    print("Logging in as " + username)
-    username_text.clear()
-    username_text.send_keys(username)
-    password_text.clear()
-    password_text.send_keys(password)
-    login_button = driver.find_element_by_name("commit")
-    login_button.click()
     timeout = 3600
 
-    # Invalid Credentials
+    # Attempt to retrieve and load cookies
     try:
-        element_present = EC.presence_of_element_located((By.CLASS_NAME, 'student-home'))
-        WebDriverWait(driver, 10).until(element_present)
-    except TimeoutException:
-        print("Invalid Credentials")
-        os.remove(file_path)
-        # Make function to request new login info
-        driver.quit()
-        run_checker()
-        exit(1)
+        cookies = pickle.load(open("/etc/hbchecker_cookies.pkl", "rb"))
+        for cookie in cookies:
+            driver.add_cookie(cookie)
+    except:
+        # Sign In
+        username_text = driver.find_element_by_id("user_login")
+        password_text = driver.find_element_by_id("user_password")
 
+        # Tracking runtime
+        start_time = datetime.now()
+
+        # Enter Login
+        print("Logging in as " + username)
+        username_text.clear()
+        username_text.send_keys(username)
+        password_text.clear()
+        password_text.send_keys(password)
+        login_button = driver.find_element_by_name("commit")
+        login_button.click()
+
+        # Invalid Credentials
+        try:
+            element_present = EC.presence_of_element_located((By.CLASS_NAME, 'student-home'))
+            WebDriverWait(driver, 10).until(element_present)
+        except Exception as e:
+            # print("Invalid Credentials")
+            # os.remove(file_path)
+            # driver.quit()
+            # run_checker()
+            exit(1)
     print("\nLOGIN SUCCESSFUL\n")
-    driver.get(URL)
-
+    driver.get(PROJ_NUM)
+    exit(1)
     # Checks if given url is a valid project
     try:
         project_page = driver.find_element_by_xpath("//article")
         project_name = project_page.find_element_by_xpath("//h1")
-    except:
-        print("Project " + PROJ_NUM + " is not a project")
+    except Exception as e:
+        print("Had getting URL "+PROJ_NUM)
+        print(e)
         driver.quit()
         exit(1)
     try:
         print("Project selected: " + project_name.text + "\n")
     except:
         print("Could not get project name...\n")
+    
+    # Save Cookies for next future session
+    pickle.dump( driver.get_cookies() , open("/etc/hbchecker_cookies.pkl","wb"))
 
     # Setting up locators for selenium
     check_code_button = driver.find_elements_by_xpath("//button[contains(text(),'Check your code')]")
