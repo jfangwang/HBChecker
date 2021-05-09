@@ -5,4 +5,11 @@ import os, sys
 import getpass
 def run():
     run_checker()
-# run()
+
+# Find what OS this script is running on
+os_sys = platform.system()
+if os_sys == 'Windows':
+    run()
+else:
+    print("HBChecker cannot run on " + os_sys + " just yet.")
+    exit(1)
