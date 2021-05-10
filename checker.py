@@ -101,6 +101,7 @@ def run_checker():
         cookies = pickle.load(open(cookies_path, "rb"))
         for cookie in cookies:
             driver.add_cookie(cookie)
+        print("Logging in as " + username  + " with cookies.")
         driver.get("https://intranet.hbtn.io/")
     except:
         # Sign In
