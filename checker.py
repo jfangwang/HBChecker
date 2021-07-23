@@ -15,20 +15,23 @@ import time
 import platform
 from getpass import getpass
 import pickle
+from os.path import expanduser
+
 
 
 def run_checker():
     # Find what OS this script is running on
+    home = expanduser("~")
     os_sys = platform.system()
     if os_sys == 'Windows':
         file_path = "hbchecker.txt"
         cookies_path = "hbchecker_cookies.pkl"
     elif os_sys == 'Linux':
-        file_path = "/etc/hbchecker.txt"
-        cookies_path = "/etc/hbchecker_cookies.pkl"
+        file_path = home + "/.hbchecker.txt"
+        cookies_path = "hbchecker_cookies.pkl"
     elif os_sys == 'Darwin':
         file_path = "hbchecker.txt"
-        cookies_path = "/etc/hbchecker_cookies.pkl"
+        cookies_path = "hbchecker_cookies.pkl"
     else:
         print("HBChecker cannot run on " + os_sys + " just yet.")
         exit(1)
@@ -74,10 +77,16 @@ def run_checker():
     # driver = webdriver.Chrome(executable_path=PATH_lin, chrome_options=options)
     if os_sys == 'Linux':
         options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--no-sandbox')
+        # options.add_argument('--headless')
+        options.add_argument("--remote-debugging-port=9222")  # this
+        options.add_argument("disable-infobars"); # disabling infobars
+        options.add_argument("--disable-extensions"); # disabling extensions
+        options.add_argument("--disable-gpu"); # applicable to windows os only
+        # options.add_argument("--disable-dev-shm-usage"); # overcome limited resource problems
+        # options.add_argument("--no-sandbox"); # Bypass OS security model
+        options.binary_location = "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
         driver = webdriver.Chrome(executable_path=PATH_lin, chrome_options=options)
+        print("Chrome driver found on Linux machine.")
         print("Chrome driver found on Linux machine.")
     elif os_sys == 'Windows':
         options = Options()
@@ -147,7 +156,7 @@ def run_checker():
     # Save Cookies for next future session
     pickle.dump(driver.get_cookies() , open(cookies_path,"wb"))
     # Setting up locators for selenium
-    check_code_button = driver.find_elements_by_xpath("//button[contains(text(),'Check your code')]")
+    check_code_button = driver.find_elements_by_xpath("//button[contains(text(),'code')]")
     task_popup = driver.find_elements_by_class_name("task_correction_modal")
     task_box = driver.find_elements_by_class_name("task-card")
     start_test_button = driver.find_elements_by_xpath("//button[contains(text(),'Start a new test')]")
@@ -185,7 +194,7 @@ def run_checker():
             has_check_code_button = False
             task_completed = False
             for item in button_list:
-                if "Check your code" in item.text:
+                if "code" in item.text:
                     has_check_code_button = True
                     button_count += 1
             
@@ -269,7 +278,7 @@ def run_checker():
             has_check_code_button = False
             task_completed = False
             for item in button_list:
-                if "Check your code" in item.text:
+                if "code" in item.text:
                     has_check_code_button = True
                     button_count += 1
                 if "Done" in button_list[0].text and "yes" in button_list[0].get_attribute("class") and check_every_task == False:
@@ -323,6 +332,7 @@ def run_checker():
 
 
             check_code_button[button_count].click()
+            result_box = task_popup[button_count].find_element_by_class_name("result")
 
             # wait for the results to load
             try:
@@ -341,7 +351,7 @@ def run_checker():
                 wait = WebDriverWait(driver, 0.7)
                 while counter < timeout and results_loaded == False:
                     try:
-                        wait.until(EC.visibility_of(start_test_button[button_count]))
+                        wait.until(EC.visibility_of(result_box))
                         results_loaded = True
                     except KeyboardInterrupt:
                         sys.exit(1)
@@ -548,4 +558,5 @@ def run_checker():
                                                                                               str(check_tests_time.total_seconds())[:-4]
                                                                                               ))
     print()
+    driver.close()
     driver.quit()

@@ -3,13 +3,14 @@ import os
 from sys import argv
 from getpass import getpass
 import platform
+from os.path import expanduser
 
-
+home = expanduser("~")
 os_sys = platform.system()
 if os_sys == 'Windows':
     file_path = "hbchecker.txt"
 elif os_sys == 'Linux':
-    file_path = "/etc/hbchecker.txt"
+    file_path = home + "/.hbchecker.txt"
 elif os_sys == 'Darwin':
     file_path = "hbchecker.txt"
 else:
@@ -36,7 +37,7 @@ def get_credentials():
         welcome = ("\nWelcome to auto project checker! Project was created so you"
                 " can run the checker without clicking the 'Check code button'"
                 " everytime. You have the option to enter your holberton crede"
-                "ntials which will be saved in '/etc/hbchecker.txt'. As long as "
+                "ntials which will be saved in '~/.hbchecker.txt'. As long as "
                 "this file exists, you should be good to go running this script."
                 " prompted.\n\nType 'man hbchecker' or 'man push' for more information.")
         print(welcome)
