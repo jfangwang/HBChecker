@@ -84,7 +84,7 @@ def run_checker():
         options.add_argument("--disable-gpu"); # applicable to windows os only
         # options.add_argument("--disable-dev-shm-usage"); # overcome limited resource problems
         # options.add_argument("--no-sandbox"); # Bypass OS security model
-        options.binary_location = "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+        # options.binary_location = "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
         driver = webdriver.Chrome(executable_path=PATH_lin, chrome_options=options)
         print("Chrome driver found on Linux machine.")
         print("Chrome driver found on Linux machine.")
